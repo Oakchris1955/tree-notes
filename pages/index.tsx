@@ -1,7 +1,8 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Cookies from "js-cookie";
+import mysqlInit from 'serverless-mysql';
 
-import { hasAuthToken } from "@/functions/authToken";
+import { getTokenOwnerID, hasAuthToken } from "@/functions/authToken";
 
 function revealToken() {
 	const button = (document.getElementById("revealButton") as HTMLButtonElement);
@@ -17,7 +18,18 @@ function logOut() {
 	location.reload();
 }
 
-export const getServerSideProps: GetServerSideProps<{ authToken: string }> = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<{}> = async (context: GetServerSidePropsContext) => {
+	
+	const mysql = mysqlInit({
+		library: require('mysql2')
+	})
+	
+	mysql.config({
+		database: "TreeDB",
+		user: "TreeDBAdmin",
+		password: "TreeDBPass"
+	})
+
 	// Get the cookies out of the request object
 	const cookies = context.req.cookies;
 
@@ -31,16 +43,35 @@ export const getServerSideProps: GetServerSideProps<{ authToken: string }> = asy
 			}
 		}
 	} else {
-		// Else, make the authorization token accesible to the main page
-		return {
-			props: {
-				authToken: cookies["authToken"] as string
+		// Else, check if the authorization token is valid by obtaining the ID of the user it belongs to
+		const userID = await getTokenOwnerID(mysql, Buffer.from(cookies["authToken"] as string, "hex"));
+
+		if (userID === null) {
+			// If no userID is null, that means that the corresponding userID is invalid
+
+			// Delete the authToken cookie
+			context.res.setHeader('Set-Cookie', 'authToken=; Max-Age=0; Path=/');
+
+			// Redirect to login page
+			return {
+				redirect: {
+					destination: '/login',
+					permanent: false
+				}
 			}
+		}
+
+		// Run MySQL clean up function
+		await mysql.end()
+
+		// Return empty props
+		return {
+			props: {}
 		}
 	}
 }
 
-export default function IndexPage(authToken: string) {
+export default function IndexPage() {
 	return (
 		<div>
 			<p>Welcome to the main page. This is currently just a placeholder</p>
