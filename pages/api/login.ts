@@ -2,6 +2,8 @@ import { createAuthToken } from '@/functions/authToken';
 import { pbkdf2Sync } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { UserData } from '@/interfaces/tables';
+
 import mysqlInit from 'serverless-mysql';
 
 const mysql = mysqlInit({
@@ -14,11 +16,7 @@ mysql.config({
 	password: "TreeDBPass"
 })
 
-interface UserData {
-	UserID: number
-	Salt: Buffer,
-	HashedPass: Buffer
-}
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<boolean>) {
 	const username = req.query.username;

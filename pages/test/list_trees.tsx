@@ -1,3 +1,4 @@
+import { getTrees } from "@/functions/accessApi";
 import { hasAuthToken } from "@/functions/authToken";
 import Cookies from "js-cookie";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
@@ -8,16 +9,12 @@ async function onSubmit(event: FormEvent) {
 
 	const formData = (event.currentTarget as HTMLFormElement).elements;
 
-	const response = await fetch('/api/list_trees?' + new URLSearchParams({
-		authToken: (Cookies.get("authToken") as string),
-		rowLimit: (formData.namedItem("limit") as HTMLInputElement).value,
-		rowOffset: (formData.namedItem("offset") as HTMLInputElement).value
-	}), {
-		method: "POST",
-	});
+	const authToken = Cookies.get("authToken") as string;
+	const rowLimit = (formData.namedItem("limit") as HTMLInputElement).value
+	const rowOffset = (formData.namedItem("offset") as HTMLInputElement).value;
 
 	const output = (document.getElementById("output") as HTMLTextAreaElement);
-	output.textContent = `Status: ${response.status} ${response.statusText}\n${await response.text()}`;
+	output.textContent = JSON.stringify(await getTrees(authToken, rowLimit, rowOffset));
 }
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context: GetServerSidePropsContext) => {
