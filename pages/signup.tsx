@@ -1,5 +1,6 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { FormEvent } from "react";
+import Cookies from "js-cookie";
 
 import { hasAuthToken } from "@/functions/authToken";
 
@@ -8,15 +9,35 @@ async function onSubmit(event: FormEvent) {
 
 	const formData = (event.currentTarget as HTMLFormElement).elements;
 
-	const response = await fetch('/api/signup?' + new URLSearchParams({
-		username: (formData.namedItem("username") as HTMLInputElement).value,
-		password: (formData.namedItem("password") as HTMLInputElement).value
+	const username = (formData.namedItem("username") as HTMLInputElement).value;
+	const password = (formData.namedItem("username") as HTMLInputElement).value;
+
+	const signUpResponse = await fetch('/api/signup?' + new URLSearchParams({
+		username: username,
+		password: password
 	}), {
 		method: "POST",
 	});
 
-	if (response.status === 200) {
-		alert("Successfully created new user");
+	if (signUpResponse.status === 200) {
+		alert("Successfully created new user. Making a login attempt...");
+
+		const loginResponse = await fetch('/api/login?' + new URLSearchParams({
+			username: username,
+			password: password
+		}), {
+			method: "POST",
+		});
+	
+		if (loginResponse.status === 200) {
+			Cookies.set("authToken", await loginResponse.text())
+			alert("Login successful. Press OK to redirect to main page.");
+			window.location.href = "/";
+		} else {
+			alert("Login attempt failed. Redirecting to login page...");
+			window.location.href = "/login";
+		}
+
 	} else {
 		alert("User creation failed");
 	}
