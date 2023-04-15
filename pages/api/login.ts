@@ -33,6 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 				values: [username]
 			})
 
+			if (Array.from(results).length === 0) {
+				res.status(404).end("User not found");
+			}
+
 			// If query successful, calculate the hash of the password and the salt
 			const hashedPassword = pbkdf2Sync(password, results[0].Salt, 10000, 255, 'sha512');
 
