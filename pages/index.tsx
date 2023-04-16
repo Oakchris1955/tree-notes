@@ -1,8 +1,12 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Cookies from "js-cookie";
 import mysqlInit from 'serverless-mysql';
+import { useEffect, useState } from "react";
 
 import { getTokenOwnerID, hasAuthToken } from "@/functions/authToken";
+import { getTrees } from "@/functions/accessApi";
+import { TreeTable } from "@/interfaces/tables";
+import Layout from "@/components/layout";
 
 function revealToken() {
 	const button = (document.getElementById("revealButton") as HTMLButtonElement);
@@ -11,11 +15,6 @@ function revealToken() {
 	button.remove();
 	label.innerText = (Cookies.get("authToken") as string);
 	label.style.visibility = "visible";
-}
-
-function logOut() {
-	Cookies.remove("authToken");
-	location.reload();
 }
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context: GetServerSidePropsContext) => {
@@ -72,16 +71,51 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context: GetSer
 }
 
 export default function IndexPage() {
+	const [trees, setTrees] = useState<TreeTable[]>([]);
+	const rowLimit = 50;
+	const [rowOffset, setRowOffset] = useState(0);
+
+	useEffect(() => {
+		getTrees(Cookies.get("authToken") as string, rowLimit, rowOffset)
+		.then(setTrees)
+		.catch((error) => {
+			alert("Unexpected error occured while trying to pbtain user's trees. Check console for more info");
+			console.error(error);
+		})
+	}, [Cookies])
+
 	return (
-		<div>
+		<Layout>
 			<p>Welcome to the main page. This is currently just a placeholder</p>
 			<p>Your authorization token is :
 				<button id="revealButton" onClick={revealToken}>Click to reveal</button>
 				<label id="tokenLabel" style={{visibility: "hidden"}}/>
 			</p>
-			<p>
-				Click <button onClick={logOut}>here</button> to log out
-			</p>
-		</div>	
+
+			<p className="treesDescriptor">Your trees: </p>
+			
+			<div className="treesContainer">
+				{trees.map((treeTable) => 
+					<div className="treeDisplay">
+						<span className="treeName">{treeTable.TreeName}</span>
+						<hr/>
+						<span className="treeDescription">{treeTable.TreeDescription}</span>
+						<br/>
+						<span className="treeDate">
+							Created at {treeTable.CreatedAt.toLocaleDateString(undefined, {
+								year: "numeric",
+								month: "long",
+								day: "numeric",
+								hour12: false,
+								hour: "numeric",
+								minute: "numeric",
+								second: "numeric"
+							})}
+						</span>
+					</div>
+				)}
+			</div>
+
+		</Layout>	
 	);
 }

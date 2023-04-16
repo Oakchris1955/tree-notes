@@ -1,0 +1,61 @@
+/* Index page styling */
+.treesDescriptor {
+	font-size: 3.5vmin;
+	text-align: center;
+	margin-bottom: 2vmin;
+}
+
+.treesContainer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 2vmin;
+}
+
+.treeDisplay {
+	width: 45vw;
+	display: inline-block;
+	margin: auto;
+}
+
+.treeName {
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 3vmin;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.treeDescription {
+	display: block;
+	width: 100%;
+	padding: 2% 5%;
+	text-align: center;
+	font-size: 2.5vmin;
+}
+
+.treeDate {
+	display: block;
+	width: 100%;
+	font-size: 1vmin;
+	text-align: center;
+}
+
+/* Navigation bar styling */
+.navBar {
+	width: 100%;
+	align-self: center;
+	display: flex;
+	margin: 1vmin 0;
+	flex-wrap: wrap;
+}
+
+.navBar a {
+	padding: 0 4vmin;
+	font-size: 3vmin;
+}
+
+.navBar hr {
+	flex: 0 0 100%;
+	margin: 1vmin 0;
+}
