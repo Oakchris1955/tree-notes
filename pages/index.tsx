@@ -76,7 +76,7 @@ export default function IndexPage() {
 	}, [Cookies])
 
 	return (
-		<Layout>
+		<main>
 			<p className="treesDescriptor">Your trees: </p>
 			
 			<div className="treesContainer">
@@ -101,6 +101,6 @@ export default function IndexPage() {
 				)}
 			</div>
 
-		</Layout>	
+		</main>	
 	);
 }
