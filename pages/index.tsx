@@ -8,15 +8,6 @@ import { getTrees } from "@/functions/accessApi";
 import { TreeTable } from "@/interfaces/tables";
 import Layout from "@/components/layout";
 
-function revealToken() {
-	const button = (document.getElementById("revealButton") as HTMLButtonElement);
-	const label = (document.getElementById("tokenLabel") as HTMLLabelElement);
-
-	button.remove();
-	label.innerText = (Cookies.get("authToken") as string);
-	label.style.visibility = "visible";
-}
-
 export const getServerSideProps: GetServerSideProps<{}> = async (context: GetServerSidePropsContext) => {
 	
 	const mysql = mysqlInit({
@@ -86,12 +77,6 @@ export default function IndexPage() {
 
 	return (
 		<Layout>
-			<p>Welcome to the main page. This is currently just a placeholder</p>
-			<p>Your authorization token is :
-				<button id="revealButton" onClick={revealToken}>Click to reveal</button>
-				<label id="tokenLabel" style={{visibility: "hidden"}}/>
-			</p>
-
 			<p className="treesDescriptor">Your trees: </p>
 			
 			<div className="treesContainer">
