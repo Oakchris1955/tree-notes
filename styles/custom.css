@@ -41,6 +41,36 @@
 	text-align: center;
 }
 
+/* Login and signup page styling */
+.formContainer {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	align-content: flex-start;
+	gap: 1vmin;
+}
+
+.inputContainer {
+	width: 25vmin;
+}
+
+.styledLabel {
+	display: block;
+	margin-left: 5%;
+	margin-bottom: 1%;
+}
+
+.styledInput {
+	width: 100%;
+	padding: 1%;
+}
+
+.submitButton {
+	width: 25vmin;
+	padding: 0.5vmin;
+}
+
 /* Navigation bar styling */
 .navBar {
 	width: 100%;

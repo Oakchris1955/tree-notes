@@ -48,14 +48,18 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 
 export default function loginPage() {
 	return (
-		<form onSubmit={onSubmit}>
-			<label htmlFor="username">Username: </label>
-			<input type="text" id="username" name="username"/><br/>
+		<form onSubmit={onSubmit} className="formContainer">
+			<div className="inputContainer">
+				<label htmlFor="username" className="styledLabel">Username: </label>
+				<input type="text" className="styledInput" id="username" name="username" autoComplete="off"/>
+			</div>
 
-			<label htmlFor="password">Password: </label>
-			<input type="password" id="password" name="password"/><br/>
+			<div className="inputContainer">
+				<label htmlFor="password" className="styledLabel">Password: </label>
+				<input type="password" className="styledInput" id="password" name="password" autoComplete="off"/>
+			</div>
 
-			<button type="submit">Login</button>
+			<button className="submitButton" type="submit">Login</button>
 		</form>
 	)
 }
