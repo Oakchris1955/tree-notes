@@ -24,3 +24,25 @@ export function getTrees(authToken: string, rowLimit: number | string, rowOffset
 		}
 	})
 }
+
+export function createTrees(authToken: string, treeName: string, treeDescription: string): Promise<[]> {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const response = await fetch('/api/list_trees?' + new URLSearchParams({
+				authToken: authToken,
+				treeName: treeName,
+				treeDescription: treeDescription
+			}), {
+				method: "POST",
+			});
+
+			if (response.status === 200) {
+				resolve([])
+			} else {
+				reject(`HTTP error: ${response.status} - ${response.statusText}`)
+			}
+		} catch (error) {
+			reject(`Fetch API error: ${error}`)
+		}
+	})
+}
